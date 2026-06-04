@@ -1536,7 +1536,7 @@ void SnippetsConsole()
 			tTbData tbd;
 			ZeroMemory(&tbd, sizeof(tTbData));
 			tbd.dlgID = -1;									// Nr of menu item to assign (!= _cmdID, beware)
-			tbd.pszModuleName = L"NppSnippets.dll";			// name of the dll this dialog belongs to // FIXED = Must match DLL name exactly for docking to work right
+			tbd.pszModuleName = L"NppSnippets";			// name of the dll this dialog belongs to // FIXED = Must match DLL name exactly for docking to work right
 			tbd.pszName = L"Snippets";						// Name for titlebar
 			tbd.hClient = s_hDlg;							// HWND Handle of window this dock belongs to
 			tbd.uMask = DWS_DF_CONT_RIGHT | DWS_ICONTAB | DWS_USEOWNDARKMODE;	// Put it on the right
