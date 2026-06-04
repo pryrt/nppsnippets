@@ -5,7 +5,7 @@ on: [ push, pull_request ]
 jobs:
 
   build_windows:
-    runs-on: windows-2022
+    runs-on: windows-latest
     strategy:
       max-parallel: 3
       matrix:
@@ -17,26 +17,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch all tags
-        run: git fetch --force --tags
-
       - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2  
+        uses: microsoft/setup-msbuild@v3
         with:
           vs-version: '[17.0,18.0)'  # Restricts discovery to MSBuild 17.x / VS 2022
 
       - name: Show MSBuild version
         run: msbuild -version
-
-      - name: Clean up Legacy RC Syntax
-        shell: powershell
-        run: |
-          $rcFile = "nppsnippets/NppSnippets_res.rc"
-          if (Test-Path $rcFile) {
-              # Dynamically replace a broken macro definition on line 32 with a hardcoded valid syntax fallback
-              (Get-Content $rcFile) -replace 'FILEVERSION.*', 'FILEVERSION 1,7,1,1' -replace 'PRODUCTVERSION.*', 'PRODUCTVERSION 1,7,1,1' | Set-Content $rcFile
-              Write-Host "Successfully patched legacy RC syntax for modern compiler compatibility."
-          }
 
       - name: Run MSBuild
         run: msbuild NppSnippets.vcxproj /m /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}"
