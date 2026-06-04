@@ -5,7 +5,7 @@ on: [ push, pull_request ]
 jobs:
 
   build_linux:
-    runs-on: ubuntu-22.04   # ubuntu-latest changes gcc to GCC14, which causes failure
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 2
       matrix:
@@ -25,17 +25,14 @@ jobs:
 
       - name: build x86
         if: matrix.build_platform == '32'
-        env:
-          CFLAGS: "-Wno-error -w"
-          CXXFLAGS: "-Wno-error -w"
-        run: make ARCH=i686-w64-mingw32 RCFLAGS="--define VER_STR_ERR_IGNORE=1" WINDRES="i686-w64-mingw32-windres --preprocessor-arg=-w"
+        run: make ARCH=i686-w64-mingw32
 
       - name: build x64
         if: matrix.build_platform == '64'
         env:
           CFLAGS: "-Wno-error -w"
           CXXFLAGS: "-Wno-error -w"
-        run: make ARCH=x86_64-w64-mingw32 RCFLAGS="--define VER_STR_ERR_IGNORE=1" WINDRES="i686-w64-mingw32-windres --preprocessor-arg=-w"
+        run: make ARCH=x86_64-w64-mingw32
   
       - name: Archive artifacts for x86
         if: matrix.build_platform == '32'
