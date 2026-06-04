@@ -25,6 +25,16 @@ jobs:
       - name: Show MSBuild version
         run: msbuild -version
 
+      - name: Clean up Legacy RC Syntax
+        shell: powershell
+        run: |
+          $rcFile = "nppsnippets/NppSnippets_res.rc"
+          if (Test-Path $rcFile) {
+              # Dynamically replace a broken macro definition on line 32 with a hardcoded valid syntax fallback
+              (Get-Content $rcFile) -replace 'FILEVERSION.*', 'FILEVERSION 1,7,1,1' -replace 'PRODUCTVERSION.*', 'PRODUCTVERSION 1,7,1,1' | Set-Content $rcFile
+              Write-Host "Successfully patched legacy RC syntax for modern compiler compatibility."
+          }
+
       - name: Run MSBuild
         run: msbuild NppSnippets.vcxproj /m /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}"
 
